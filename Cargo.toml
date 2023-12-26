@@ -1,0 +1,3 @@
+[workspace]
+members = ["leaflet-velocity-sys","leptos-leaflet-velocity","examples/basic"]
+resolver = "2"

@@ -1,0 +1,17 @@
+[package]
+name = "leaflet-velocity-sys"
+authors = ["Antoine Renaud <antoine.renaud91@gmail.com>"]
+license = "MIT/Apache-2.0"
+description = "A wasm-bindgen wrapper for leaflet-velocity.js"
+homepage = "https://github.com/AntoineRenaud91/leaflet-velocity-rs"
+repository = "https://github.com/AntoineRenaud91/leaflet-velocity-rs"
+version = "0.1.0"
+edition = "2021"
+readme = "README.md"
+
+
+[dependencies]
+js-sys = "0.3"
+leaflet = "0.4"
+paste = "1.0"
+wasm-bindgen = "0.2.89"
