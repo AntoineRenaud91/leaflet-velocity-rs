@@ -8,7 +8,11 @@ repository = "https://github.com/AntoineRenaud91/leaflet-velocity-rs"
 version = "0.1.0"
 edition = "2021"
 readme = "README.md"
+keywords = ["leaflet", "web", "wasm", "graphics"]
+publish = true
 
+[badges]
+maintenance = { status = "actively-developed" }
 
 [dependencies]
 js-sys = "0.3"
