@@ -1,0 +1,11 @@
+[package]
+name = "leptos-leaflet-velocity"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+leaflet = "0.4"
+leaflet-velocity-sys = { version = "0.1.0", path = "../leaflet-velocity-sys" , features = ["leptos"]}
+leptos = { version = "0.5", features = ["csr"] }
+leptos-leaflet = "0.6"

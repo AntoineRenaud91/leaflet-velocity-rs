@@ -1,22 +1,41 @@
-use js_sys::Array;
-use leaflet::{ Map, MapOptions,
-     TileLayer, LatLng
-};
-use leaflet_velocity_sys::{VelocityDataHeader, VelocityLayerOption, VelocityLayerData, velocity_layer};
-use wasm_bindgen::prelude::*;
-use web_sys::console;
+use leptos::*;
+use leptos_leaflet::{MapContainer,TileLayer,Position};
+use leptos_leaflet_velocity::{VelocityLayer,VelocityLayerOption,VelocityDataHeader,VelocityLayerData};
+use web_sys::{wasm_bindgen::JsValue, js_sys::Array};
 
-#[wasm_bindgen(start)]
-pub fn main() -> Result<(), JsValue> {
-    console::log_1(&"Running Leaflet example code in Rust.".into());
-
-    let options = MapOptions::default();
-    let map = Map::new("map", &options);
-    map.set_view(&LatLng::new(0.0, 0.0), 3.0);
-    TileLayer::new("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").add_to(&map);
-    velocity_layer(&get_velocity_layer_otpion()).add_to(&map);
-    Ok(())
+fn main() {
+    console_error_panic_hook::set_once();
+    mount_to_body(|| {
+        view! {<App/>}
+    });
 }
+
+
+#[component]
+fn App() -> impl IntoView {
+    let (show, set_show) = create_signal(false);
+    view! {
+        <MapContainer style="height: 50vh;" center=Position::new(0.0, 0.0) zoom=3.0 set_view=true>
+            <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"/>
+            <Show
+                when= move || {show.get()}
+                fallback= || {view!{}}
+            >
+                <VelocityLayer options={get_velocity_layer_otpion()}/>
+            </Show>
+        </MapContainer>
+        <button
+            on:click=move |_| {
+                set_show.update(|s| *s= !*s)
+            }
+        >
+            "Click me: "
+            {move || if show.get() {"Hide Velocity Layer!"} else {"Show Velocity Layer!"}}
+        </button>
+    }
+}
+
+
 
 fn get_velocity_layer_otpion() -> VelocityLayerOption {
     let options_data_u = VelocityLayerData::new();

@@ -1,7 +1,10 @@
 use js_sys::Array;
 use wasm_bindgen::prelude::*;
 use paste::paste;
+#[cfg(not(feature="leptos"))]
 use leaflet::{Layer, Map};
+#[cfg(feature="leptos")]
+use leptos_leaflet::leaflet::{Layer,Map};
 
 #[wasm_bindgen]
 extern "C" {
