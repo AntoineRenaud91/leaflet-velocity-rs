@@ -1,10 +1,10 @@
 use js_sys::Array;
-use wasm_bindgen::prelude::*;
-use paste::paste;
-#[cfg(not(feature="leptos"))]
+#[cfg(not(feature = "leptos"))]
 use leaflet::{Layer, Map};
-#[cfg(feature="leptos")]
-use leptos_leaflet::leaflet::{Layer,Map};
+#[cfg(feature = "leptos")]
+use leptos_leaflet::leaflet::{Layer, Map};
+use paste::paste;
+use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -13,21 +13,19 @@ extern "C" {
     pub type VelocityLayer;
 
     #[wasm_bindgen(js_namespace = L, js_name = "velocityLayer")]
-    pub fn velocity_layer (options: &VelocityLayerOption) -> VelocityLayer;
+    pub fn velocity_layer(options: &VelocityLayerOption) -> VelocityLayer;
 
     #[wasm_bindgen(method, js_name = addTo)]
     pub fn add_to(this: &VelocityLayer, map: &Map) -> VelocityLayer;
-     
+
     /// ['setIcon'](https://leafletjs.com/reference.html#marker-seticon)
     #[wasm_bindgen(method, js_name = "_clearWind")]
     pub fn _clear_wind(this: &VelocityLayer);
 
-    
     /// ['setIcon'](https://leafletjs.com/reference.html#marker-seticon)
     #[wasm_bindgen(method, js_name = "setOptions")]
-    pub fn set_options(this: &VelocityLayer, options:&VelocityLayerOption);
+    pub fn set_options(this: &VelocityLayer, options: &VelocityLayerOption);
 }
-
 
 macro_rules! create_object_with_properties {
     (($t:ident, $t_js:ident), $(($rust:ident, $js:ident, $b:ty)),+) => {
@@ -85,11 +83,11 @@ create_object_with_properties!(
     (display_values, displayValues, bool),
     (max_velocity, maxVelocity, f64),
     (frame_rate, frameRate, f64),
-    (color_scale, colorScale,Array),
+    (color_scale, colorScale, Array),
     (line_width, lineWidth, f64),
-    (particle_multiplier,particleMultiplier,f64),
-    (particle_age,particleAge,f64),
-    (velocity_scale,velocityScale,f64), 
+    (particle_multiplier, particleMultiplier, f64),
+    (particle_age, particleAge, f64),
+    (velocity_scale, velocityScale, f64),
     (keyboard, keyboard, bool),
     (data, data, Array)
 );

@@ -1,11 +1,19 @@
 [package]
 name = "leptos-leaflet-velocity"
-version = "0.1.0"
-edition = "2021"
-publish = false
+authors = ["Antoine Renaud <antoine.renaud91@gmail.com>"]
+license = "MIT/Apache-2.0"
+description = "A Leptos leaflet-velocity component"
+homepage = "https://github.com/AntoineRenaud91/leaflet-velocity-rs"
+repository = "https://github.com/AntoineRenaud91/leaflet-velocity-rs"
+version = "0.2.0"
+edition = "2024"
+readme = "README.md"
+keywords = ["leaflet", "web", "wasm", "graphics","leptos"]
+publish = true
+
 
 [dependencies]
-leaflet = "0.4"
-leaflet-velocity-sys = { version = "0.1.0", path = "../leaflet-velocity-sys" , features = ["leptos"]}
-leptos = { version = "0.5", features = ["csr"] }
-leptos-leaflet = "0.6"
+leaflet = "0.5"
+leaflet-velocity-sys = { path = "../leaflet-velocity-sys", features = ["leptos"] }
+leptos = { version = "0.8.9", features = ["csr"] }
+leptos-leaflet = "0.10.1"

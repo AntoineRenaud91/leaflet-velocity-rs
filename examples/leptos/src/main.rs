@@ -1,7 +1,9 @@
-use leptos::*;
-use leptos_leaflet::{MapContainer,TileLayer,Position};
-use leptos_leaflet_velocity::{VelocityLayer,VelocityLayerOption,VelocityDataHeader,VelocityLayerData};
-use web_sys::{wasm_bindgen::JsValue, js_sys::Array};
+use leptos::prelude::*;
+use leptos_leaflet::prelude::{MapContainer, Position, TileLayer};
+use leptos_leaflet_velocity::{
+    VelocityDataHeader, VelocityLayer, VelocityLayerData, VelocityLayerOption,
+};
+use web_sys::{js_sys::Array, wasm_bindgen::JsValue};
 
 fn main() {
     console_error_panic_hook::set_once();
@@ -10,16 +12,15 @@ fn main() {
     });
 }
 
-
 #[component]
 fn App() -> impl IntoView {
-    let (show, set_show) = create_signal(false);
+    let (show, set_show) = signal(false);
     view! {
         <MapContainer style="height: 50vh;" center=Position::new(0.0, 0.0) zoom=3.0 set_view=true>
             <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors"/>
             <Show
                 when= move || {show.get()}
-                fallback= || {view!{}}
+                fallback= || {}
             >
                 <VelocityLayer options={get_velocity_layer_otpion()}/>
             </Show>
@@ -35,8 +36,6 @@ fn App() -> impl IntoView {
     }
 }
 
-
-
 fn get_velocity_layer_otpion() -> VelocityLayerOption {
     let options_data_u = VelocityLayerData::new();
     let options_data_u_header = VelocityDataHeader::new();
@@ -51,12 +50,15 @@ fn get_velocity_layer_otpion() -> VelocityLayerOption {
     options_data_u_header.set_lo1(-180.);
     options_data_u_header.set_lo2(180.);
     options_data_u.set_header(options_data_u_header);
-    let data = vec![0.,0.,0.,0.,0.,0., 21., 30., 21., 0., 0., 0., 0., 0., 0., 0., -21. ,-30., -21., 0.,0.,0.,0.,0.,0.,];
+    let data = vec![
+        0., 0., 0., 0., 0., 0., 21., 30., 21., 0., 0., 0., 0., 0., 0., 0., -21., -30., -21., 0.,
+        0., 0., 0., 0., 0.,
+    ];
     let data = Array::from_iter(data.into_iter().map(JsValue::from_f64));
     options_data_u.set_data(data);
     let options_data_v = VelocityLayerData::new();
     let options_data_v_header = VelocityDataHeader::new();
-    options_data_v_header.set_parameter_number(3);  
+    options_data_v_header.set_parameter_number(3);
     options_data_v_header.set_parameter_category(2);
     options_data_v_header.set_dx(90.);
     options_data_v_header.set_dy(45.);
@@ -67,17 +69,22 @@ fn get_velocity_layer_otpion() -> VelocityLayerOption {
     options_data_v_header.set_lo1(-180.);
     options_data_v_header.set_lo2(180.);
     options_data_v.set_header(options_data_v_header);
-    let data = vec![0.,0.,0.,0.,0.,0., 21., 0., -21., 0., 0., 30., 0., -30., 0., 0., 21., 0., -21., 0.,0.,0.,0.,0.,0.,];
+    let data = vec![
+        0., 0., 0., 0., 0., 0., 21., 0., -21., 0., 0., 30., 0., -30., 0., 0., 21., 0., -21., 0.,
+        0., 0., 0., 0., 0.,
+    ];
     let data = Array::from_iter(data.into_iter().map(JsValue::from_f64));
     options_data_v.set_data(data);
     let options = VelocityLayerOption::new();
-    options.set_data(Array::from_iter([options_data_u,options_data_v]));
+    options.set_data(Array::from_iter([options_data_u, options_data_v]));
     options.set_display_values(false);
     options.set_frame_rate(24.);
     options.set_line_width(1.5);
     options.set_particle_age(30.);
     options.set_particle_multiplier(0.01);
     options.set_velocity_scale(0.004);
-    options.set_color_scale(Array::from_iter(["rgba(255,255,255,255)"].into_iter().map(JsValue::from_str)));
+    options.set_color_scale(Array::from_iter(
+        ["rgba(255,255,255,255)"].into_iter().map(JsValue::from_str),
+    ));
     options
 }

@@ -5,8 +5,8 @@ license = "MIT/Apache-2.0"
 description = "A wasm-bindgen wrapper for leaflet-velocity.js"
 homepage = "https://github.com/AntoineRenaud91/leaflet-velocity-rs"
 repository = "https://github.com/AntoineRenaud91/leaflet-velocity-rs"
-version = "0.1.0"
-edition = "2021"
+version = "0.2.0"
+edition = "2024"
 readme = "README.md"
 keywords = ["leaflet", "web", "wasm", "graphics"]
 publish = true
@@ -20,8 +20,8 @@ leptos = ["dep:leptos-leaflet"]
 
 [dependencies]
 js-sys = "0.3"
-leaflet = "0.4"
-leptos-leaflet = {version = "0.6.1", optional = true}
+leaflet = "0.5"
+leptos-leaflet = {version = "0.10.1", optional = true}
 paste = "1.0"
 wasm-bindgen = "0.2.89"
 
