@@ -17,7 +17,6 @@ extern "C" {
 
     #[wasm_bindgen(method, js_name = addTo)]
     pub fn add_to(this: &VelocityLayer, map: &Map) -> VelocityLayer;
-
     /// ['setIcon'](https://leafletjs.com/reference.html#marker-seticon)
     #[wasm_bindgen(method, js_name = "_clearWind")]
     pub fn _clear_wind(this: &VelocityLayer);
