@@ -13,5 +13,5 @@ publish = false
 console_error_panic_hook = "0.1.7"
 leptos = { version = "0.8.9", features = ["csr"] }
 leptos-leaflet = { version = "0.10.1", features = ["csr"] }
-leptos-leaflet-velocity = { version = "0.2.0", path = "../../leptos-leaflet-velocity" }
+leptos-leaflet-velocity = { version = "0.3.0", path = "../../leptos-leaflet-velocity" }
 web-sys = "0.3.80"
