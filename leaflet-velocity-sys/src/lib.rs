@@ -1,3 +1,10 @@
+//! # leaflet-velocity-sys
+//!
+//! Low-level wasm-bindgen bindings for [leaflet-velocity.js](https://github.com/onaci/leaflet-velocity).
+//!
+//! This crate provides raw JavaScript bindings. For a higher-level Leptos component,
+//! see the [`leptos-leaflet-velocity`](https://crates.io/crates/leptos-leaflet-velocity) crate.
+
 use js_sys::Array;
 #[cfg(not(feature = "leptos"))]
 use leaflet::{Layer, Map};
@@ -8,8 +15,8 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
-    #[derive(Clone, Debug)]
     #[wasm_bindgen(extends = Layer)]
+    #[derive(Debug, Clone)]
     pub type VelocityLayer;
 
     #[wasm_bindgen(js_namespace = L, js_name = "velocityLayer")]
@@ -17,11 +24,12 @@ extern "C" {
 
     #[wasm_bindgen(method, js_name = addTo)]
     pub fn add_to(this: &VelocityLayer, map: &Map) -> VelocityLayer;
-    /// ['setIcon'](https://leafletjs.com/reference.html#marker-seticon)
+
+    /// Clears the wind animation from the layer.
     #[wasm_bindgen(method, js_name = "_clearWind")]
     pub fn _clear_wind(this: &VelocityLayer);
 
-    /// ['setIcon'](https://leafletjs.com/reference.html#marker-seticon)
+    /// Sets the options for the velocity layer.
     #[wasm_bindgen(method, js_name = "setOptions")]
     pub fn set_options(this: &VelocityLayer, options: &VelocityLayerOption);
 }
@@ -47,11 +55,17 @@ macro_rules! create_object_with_properties {
             }
         }
         impl $t {
-            #[allow(clippy::new_without_default)]
-            #[must_use] pub fn new() -> Self {
+            #[must_use]
+            pub fn new() -> Self {
                 #[allow(unused_mut)]
                 let mut r = JsCast::unchecked_into(js_sys::Object::new());
                 r
+            }
+        }
+
+        impl Default for $t {
+            fn default() -> Self {
+                Self::new()
             }
         }
     };

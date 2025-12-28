@@ -1,4 +1,4 @@
-# Leaflet-velocity-rs basic example
+# Leaflet-velocity-rs leptos example
 
 ## How to build and serve
 

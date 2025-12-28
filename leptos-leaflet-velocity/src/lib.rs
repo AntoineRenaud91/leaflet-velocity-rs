@@ -1,46 +1,126 @@
-use js_sys::Array;
-use leaflet_velocity_sys::velocity_layer;
-use leptos::prelude::*;
-use wasm_bindgen::JsValue;
+//! # leptos-leaflet-velocity
+//!
+//! A Leptos component for leaflet-velocity.js, providing animated velocity/wind
+//! visualizations on Leaflet maps.
+//!
+//! ## Usage
+//!
+//! ```rust,ignore
+//! use leptos_leaflet_velocity::{VelocityLayer, VelocityLayerOptions, VelocityComponents};
+//!
+//! // Inside your Leptos component:
+//! view! {
+//!     <MapContainer>
+//!         <VelocityLayer data={Some(options)} />
+//!     </MapContainer>
+//! }
+//! ```
 
+use js_sys::Array;
 use leaflet_velocity_sys::{
     VelocityDataHeader as VelocityDataHeaderSys, VelocityLayer as VelocityLayerSys,
     VelocityLayerData as VelocityLayerDataSys, VelocityLayerOption as VelocityLayerOptionSys,
+    velocity_layer,
 };
+use leptos::prelude::*;
 use leptos_leaflet::prelude::LeafletMapContext;
+use wasm_bindgen::JsValue;
 
-#[derive(bon::Builder, Clone)]
+/// Header metadata for velocity grid data.
+///
+/// Describes the spatial extent and resolution of the velocity data grid,
+/// following the GRIB2 format conventions.
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
 pub struct VelocityDataHeader {
+    /// GRIB2 parameter number (e.g., 2 for U-component, 3 for V-component).
     pub parameter_number: usize,
+    /// GRIB2 parameter category (e.g., 2 for momentum).
     pub parameter_category: usize,
+    /// Grid spacing in the X (longitude) direction, in degrees.
     pub dx: f64,
+    /// Grid spacing in the Y (latitude) direction, in degrees.
     pub dy: f64,
+    /// Number of grid points in the X (longitude) direction.
     pub nx: usize,
+    /// Number of grid points in the Y (latitude) direction.
     pub ny: usize,
+    /// Latitude of the first grid point (typically the northern boundary).
     pub la1: f64,
+    /// Latitude of the last grid point (typically the southern boundary).
     pub la2: f64,
+    /// Longitude of the first grid point (typically the western boundary).
     pub lo1: f64,
+    /// Longitude of the last grid point (typically the eastern boundary).
     pub lo2: f64,
 }
 
-#[derive(bon::Builder, Clone)]
+/// Velocity data for a single component (U or V).
+///
+/// Contains the grid header metadata and the actual velocity values.
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
 pub struct VelocityData {
+    /// Grid metadata describing the spatial extent and resolution.
     pub header: VelocityDataHeader,
+    /// Velocity values in row-major order (size should be `nx * ny`).
     pub data: Vec<f64>,
 }
 
-#[derive(bon::Builder, Clone)]
+/// Configuration options for the velocity layer.
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
 pub struct VelocityLayerOptions {
+    /// Whether to display velocity values on hover.
     pub display_values: bool,
+    /// Maximum velocity value for color scaling.
     pub max_velocity: f64,
+    /// Animation frame rate in frames per second.
     pub frame_rate: f64,
+    /// Color scale as CSS color strings (e.g., `"rgba(255,255,255,255)"`).
     pub color_scale: Vec<String>,
+    /// Width of particle trail lines in pixels.
     pub line_width: f64,
+    /// Multiplier for particle density (higher = more particles).
     pub particle_multiplier: f64,
+    /// Maximum age of particles in frames before respawning.
     pub particle_age: f64,
+    /// Scale factor for velocity vectors.
     pub velocity_scale: f64,
+    /// Whether to enable keyboard controls.
     pub keyboard: bool,
+    /// The U and V velocity components.
     pub data: [VelocityData; 2],
+}
+
+impl VelocityData {
+    /// Converts a `VelocityData` struct to its JavaScript sys representation.
+    fn to_js(&self) -> VelocityLayerDataSys {
+        let header = VelocityDataHeaderSys::new();
+        header.set_parameter_number(self.header.parameter_number);
+        header.set_parameter_category(self.header.parameter_category);
+        header.set_dx(self.header.dx);
+        header.set_dy(self.header.dy);
+        header.set_nx(self.header.nx);
+        header.set_ny(self.header.ny);
+        header.set_la1(self.header.la1);
+        header.set_la2(self.header.la2);
+        header.set_lo1(self.header.lo1);
+        header.set_lo2(self.header.lo2);
+
+        let layer_data = VelocityLayerDataSys::new();
+        layer_data.set_header(header);
+        layer_data.set_data(Array::from_iter(
+            self.data
+                .iter()
+                .map(|v| if v.is_nan() { 0. } else { *v })
+                .map(JsValue::from_f64),
+        ));
+        layer_data
+    }
 }
 
 #[component(transparent)]
@@ -71,49 +151,10 @@ pub fn VelocityLayer(#[prop(into)] data: Signal<Option<VelocityLayerOptions>>) -
             options.set_velocity_scale(data.velocity_scale);
             options.set_max_velocity(data.max_velocity);
             options.set_keyboard(data.keyboard);
-            options.set_data({
-                let header = VelocityDataHeaderSys::new();
-                header.set_parameter_number(data.data[0].header.parameter_number);
-                header.set_parameter_category(data.data[0].header.parameter_category);
-                header.set_dx(data.data[0].header.dx);
-                header.set_dy(data.data[0].header.dy);
-                header.set_nx(data.data[0].header.nx);
-                header.set_ny(data.data[0].header.ny);
-                header.set_la1(data.data[0].header.la1);
-                header.set_la2(data.data[0].header.la2);
-                header.set_lo1(data.data[0].header.lo1);
-                header.set_lo2(data.data[0].header.lo2);
-                let options_data_u = VelocityLayerDataSys::new();
-                options_data_u.set_header(header);
-                options_data_u.set_data(Array::from_iter(
-                    data.data[0]
-                        .data
-                        .iter()
-                        .map(|v| if v.is_nan() { 0. } else { *v })
-                        .map(JsValue::from_f64),
-                ));
-                let header = VelocityDataHeaderSys::new();
-                header.set_parameter_number(data.data[1].header.parameter_number);
-                header.set_parameter_category(data.data[1].header.parameter_category);
-                header.set_dx(data.data[1].header.dx);
-                header.set_dy(data.data[1].header.dy);
-                header.set_nx(data.data[1].header.nx);
-                header.set_ny(data.data[1].header.ny);
-                header.set_la1(data.data[1].header.la1);
-                header.set_la2(data.data[1].header.la2);
-                header.set_lo1(data.data[1].header.lo1);
-                header.set_lo2(data.data[1].header.lo2);
-                let options_data_v = VelocityLayerDataSys::new();
-                options_data_v.set_header(header);
-                options_data_v.set_data(Array::from_iter(
-                    data.data[1]
-                        .data
-                        .iter()
-                        .map(|v| if v.is_nan() { 0. } else { *v })
-                        .map(JsValue::from_f64),
-                ));
-                Array::from_iter([options_data_u, options_data_v])
-            });
+            options.set_data(Array::from_iter([
+                data.data[0].to_js(),
+                data.data[1].to_js(),
+            ]));
             set_options.set(options);
         }
     });

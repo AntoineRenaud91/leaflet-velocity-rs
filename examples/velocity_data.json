@@ -1,0 +1,41 @@
+{
+    "data": [{
+            "header":{
+                "parameterNumber": 2,
+                "parameterCategory": 2,
+                "dx": 90,
+                "dy": 45,
+                "nx": 5,
+                "ny": 5,
+                "la1": 90,
+                "la2": -90,
+                "lo1": -180,
+                "lo2": 180
+            },
+            "data":[0, 0, 0, 0, 0, 0, 21, 30, 21, 0, 0, 0, 0, 0, 0, 0, -21, -30, -21, 0, 0, 0, 0, 0, 0]
+        },{
+            "header":{
+                "parameterNumber": 3,
+                "parameterCategory": 2,
+                "dx": 90,
+                "dy": 45,
+                "nx": 5,
+                "ny": 5,
+                "la1": 90,
+                "la2": -90,
+                "lo1": -180,
+                "lo2": 180
+            },
+            "data":[ 0, 0, 0, 0, 0, 0, 21, 0, -21, 0, 0, 30, 0, -30, 0, 0, 21, 0, -21, 0, 0, 0, 0, 0, 0]
+        }
+    ],
+    "displayValues": false,
+    "frameRate": 24,
+    "lineWidth": 1.5,
+    "particleAge": 30,
+    "particleMultiplier": 0.01,
+    "velocityScale": 0.004,
+    "colorScale": ["rgba(255,255,255,255)"],
+    "maxVelocity": 10,
+    "keyboard": false
+}   
